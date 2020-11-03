@@ -3,20 +3,32 @@
 
 #include <Arduino.h>
 #include <ArduinoOTA.h>
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
 #include <TelnetStream.h>
 #include <WiFiUdp.h>
+
+#ifdef ESP8266
+#include <ESP8266WiFi.h>
+#include <ESP8266mDNS.h>
+#endif
+#ifdef ESP32
+#include <ESPmDNS.h>
+#include <WiFi.h>
+#endif
+
+#ifdef LOCAL_CREDENTIALS_FILE
+#include "WiFi_Credentials_Local.h"
+#else
 #include <WiFi_Credentials.h>
+#endif
 
 class espHelper {
 public:
     espHelper(void);
-    bool setup() { setup(mySSID, myPASSWORD); };
-    bool setup(char* ssid, char* password = NULL);
+    bool setup() { return setup(mySSID, myPASSWORD); };
+    bool setup(const char* ssid, const char* password = NULL);
 
     bool setupOTA(const char* nameprefix) { setupOTA(nameprefix, mySSID, myPASSWORD); };
-    bool setupOTA(const char* nameprefix, char* ssid, char* password = NULL);
+    bool setupOTA(const char* nameprefix, const char* ssid, const char* password = NULL);
 
     void loop();
 

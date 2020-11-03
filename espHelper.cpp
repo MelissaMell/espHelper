@@ -2,10 +2,9 @@
 
 espHelper::espHelper() { }
 
-bool espHelper::setup(char* ssid, char* password)
+bool espHelper::setup(const char* ssid, const char* password)
 {
     Serial.println(F("\n**********************\n********-WiFi-********\n**********************"));
-
     WiFi.begin(ssid, password);
     Serial.print(F("Connecting to "));
     Serial.println(ssid);
@@ -17,10 +16,11 @@ bool espHelper::setup(char* ssid, char* password)
     Serial.println(F("\nWiFi connected!"));
     Serial.println(WiFi.localIP());
     Serial.println(F(""));
+    return true;
 }
-bool espHelper::setupOTA(const char* nameprefix, char* ssid, char* password)
+bool espHelper::setupOTA(const char* nameprefix, const char* ssid, const char* password)
 {
-    Serial.println(F("\n******************\n********-WiFi&OTA-********\n******************"));
+    Serial.println(F("\n**********************\n******-WiFi&OTA-******\n**********************"));
 
     const int maxlen = 40;
     char fullhostname[maxlen];
@@ -83,6 +83,8 @@ bool espHelper::setupOTA(const char* nameprefix, char* ssid, char* password)
     Serial.println("OTA Initialized");
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
+
+    return true;
 }
 
 void espHelper::loop()
@@ -93,7 +95,13 @@ void espHelper::loop()
     case 'R':
         TelnetStream.stop();
         delay(100);
+#ifdef ESP8266
         ESP.reset();
+#endif
+#ifdef ESP32
+        ESP.restart();
+#endif
+
         break;
     case 'C':
         TelnetStream.println("bye bye");
