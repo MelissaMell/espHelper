@@ -27,7 +27,7 @@ public:
     bool setup() { return setup(mySSID, myPASSWORD); };
     bool setup(const char* ssid, const char* password = NULL);
 
-    bool setupOTA(const char* nameprefix) { setupOTA(nameprefix, mySSID, myPASSWORD); };
+    bool setupOTA(const char* nameprefix) { return setupOTA(nameprefix, mySSID, myPASSWORD); };
     bool setupOTA(const char* nameprefix, const char* ssid, const char* password = NULL);
 
     void loop();
