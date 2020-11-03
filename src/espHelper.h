@@ -15,6 +15,7 @@
 #include <WiFi.h>
 #endif
 
+#define LOCAL_CREDENTIALS_FILE
 #ifdef LOCAL_CREDENTIALS_FILE
 #include "WiFi_Credentials_Local.h"
 #else
