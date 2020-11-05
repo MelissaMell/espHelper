@@ -1,6 +1,6 @@
 #include "espHelper.h"
 
-espHelper::espHelper() { }
+//espHelper::espHelper() { }
 
 bool espHelper::setup(const char* ssid, const char* password)
 {
@@ -18,7 +18,7 @@ bool espHelper::setup(const char* ssid, const char* password)
     Serial.println(F(""));
     return true;
 }
-bool espHelper::setupOTA(const char* nameprefix, const char* ssid, const char* password)
+bool espHelper::setupOTA(const char* ssid, const char* password)
 {
     Serial.println(F("\n**********************\n******-WiFi&OTA-******\n**********************"));
 
@@ -26,7 +26,7 @@ bool espHelper::setupOTA(const char* nameprefix, const char* ssid, const char* p
     char fullhostname[maxlen];
     uint8_t mac[6];
     WiFi.macAddress(mac);
-    snprintf(fullhostname, maxlen, "%s-%02x%02x%02x", nameprefix, mac[3], mac[4], mac[5]);
+    snprintf(fullhostname, maxlen, "%s-%02x%02x%02x", hostName_, mac[3], mac[4], mac[5]);
     ArduinoOTA.setHostname(fullhostname);
 
     WiFi.mode(WIFI_STA);

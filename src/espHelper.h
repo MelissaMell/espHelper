@@ -24,15 +24,16 @@
 
 class espHelper {
 public:
-    espHelper(void);
+    espHelper(const char* nameprefix) { strlcpy(hostName_, nameprefix, sizeof(hostName_)); };
     bool setup() { return setup(mySSID, myPASSWORD); };
     bool setup(const char* ssid, const char* password = NULL);
 
-    bool setupOTA(const char* nameprefix) { return setupOTA(nameprefix, mySSID, myPASSWORD); };
-    bool setupOTA(const char* nameprefix, const char* ssid, const char* password = NULL);
+    bool setupOTA() { return setupOTA(mySSID, myPASSWORD); };
+    bool setupOTA(const char* ssid, const char* password = NULL);
 
     void loop();
 
 private:
+    char hostName_[20];
 };
 #endif
