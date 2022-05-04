@@ -1,6 +1,6 @@
 #include "espHelper.h"
 
-//espHelper::espHelper() { }
+// espHelper::espHelper() { }
 
 bool espHelper::setup(const char* ssid, const char* password)
 {
@@ -9,8 +9,16 @@ bool espHelper::setup(const char* ssid, const char* password)
     Serial.print(F("Connecting to "));
     Serial.println(ssid);
 
+    uint8_t atempts = 0;
+
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
+        if (atempts >= 20) {
+            Serial.println(F("\nWiFi Failed to Connect!"));
+            Serial.println(F(""));
+            return false;
+        }
+        atempts++;
         Serial.print(F("."));
     }
     Serial.println(F("\nWiFi connected!"));
@@ -31,21 +39,24 @@ bool espHelper::setupOTA(const char* ssid, const char* password)
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
-    while (WiFi.waitForConnectResult() != WL_CONNECTED) {
-        Serial.println("Connection Failed! Rebooting...");
-        delay(5000);
-        ESP.restart();
+
+    uint8_t atempts = 0;
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(500);
+        if (atempts >= 20) {
+            Serial.println(F("\nWiFi Failed to Connect!"));
+            Serial.println(F(""));
+            return false;
+        }
+        atempts++;
+        Serial.print(F("."));
     }
 
-    // Port defaults to 3232
-    // ArduinoOTA.setPort(3232);
-
-    // No authentication by default
-    // ArduinoOTA.setPassword("admin");
-
-    // Password can be set with it's md5 value as well
-    // MD5(admin) = 21232f297a57a5a743894a0e4a801fc3
-    // ArduinoOTA.setPasswordHash("21232f297a57a5a743894a0e4a801fc3");
+    // while (WiFi.waitForConnectResult() != WL_CONNECTED) {
+    //     Serial.println("Connection Failed! Rebooting...");
+    //     delay(5000);
+    //     ESP.restart();
+    // }
 
     ArduinoOTA.onStart([]() {
         String type;
