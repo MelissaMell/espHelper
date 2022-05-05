@@ -3,16 +3,26 @@
 
 #include <Arduino.h>
 #include <ArduinoOTA.h>
-#include <TelnetStream.h>
 #include <WiFiUdp.h>
+
+//#define TELNET_STREAM
+#ifndef TELNET_STREAM
+#include <TelnetPrint.h>
+#define TELNET TelnetPrint
+#else
+#include <TelnetStream.h>
+#define TELNET TelnetStream
+#endif
 
 #ifdef ESP8266
 #include <ESP8266WiFi.h>
 #include <ESP8266mDNS.h>
+#define RESTART reset()
 #endif
 #ifdef ESP32
 #include <ESPmDNS.h>
 #include <WiFi.h>
+#define RESTART restart()
 #endif
 
 #define LOCAL_CREDENTIALS_FILE

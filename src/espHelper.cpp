@@ -89,7 +89,7 @@ bool espHelper::setupOTA(const char* ssid, const char* password)
     });
 
     ArduinoOTA.begin();
-    TelnetStream.begin();
+    TELNET.begin();
 
     Serial.println("OTA Initialized");
     Serial.print("IP address: ");
@@ -102,17 +102,12 @@ void espHelper::loop()
 {
     ArduinoOTA.handle();
 
+#ifdef TELNET_STREAM
     switch (TelnetStream.read()) {
     case 'R':
         TelnetStream.stop();
         delay(100);
-#ifdef ESP8266
-        ESP.reset();
-#endif
-#ifdef ESP32
-        ESP.restart();
-#endif
-
+        ESP.RESTART;
         break;
     case 'C':
         TelnetStream.println("bye bye");
@@ -120,4 +115,6 @@ void espHelper::loop()
         TelnetStream.stop();
         break;
     }
+
+#endif
 }
