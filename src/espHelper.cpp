@@ -1,25 +1,36 @@
 #include "espHelper.h"
-
+#include "ezButton.h"
 // espHelper::espHelper() { }
 
+ezButton button2(0);
 bool espHelper::setup(const char* ssid, const char* password)
 {
+    uint32_t currentMillis = millis();
+    uint32_t previousMillis = currentMillis;
+
     Serial.println(F("\n**********************\n********-WiFi-********\n**********************"));
     WiFi.begin(ssid, password);
     Serial.print(F("Connecting to "));
     Serial.println(ssid);
 
     uint8_t atempts = 0;
-
     while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        if (atempts >= 20) {
-            Serial.println(F("\nWiFi Failed to Connect!"));
+        button2.loop();
+        currentMillis = millis();
+        if (currentMillis - previousMillis > 500) { // delay(500);
+            if (atempts >= 20) {
+                Serial.println(F("\nWiFi Failed to Connect!"));
+                Serial.println(F(""));
+                return false;
+            }
+            atempts++;
+            Serial.print(F("."));
+            previousMillis = currentMillis;
+        } else if (button2.isReleased()) {
+            Serial.println(F("\nWiFi User Canceled"));
             Serial.println(F(""));
             return false;
         }
-        atempts++;
-        Serial.print(F("."));
     }
     Serial.println(F("\nWiFi connected!"));
     Serial.println(WiFi.localIP());
@@ -30,6 +41,8 @@ bool espHelper::setupOTA(const char* ssid, const char* password)
 {
     Serial.println(F("\n**********************\n******-WiFi&OTA-******\n**********************"));
 
+    uint32_t currentMillis = millis();
+    uint32_t previousMillis = currentMillis;
     const int maxlen = 40;
     char fullhostname[maxlen];
     uint8_t mac[6];
@@ -42,14 +55,23 @@ bool espHelper::setupOTA(const char* ssid, const char* password)
 
     uint8_t atempts = 0;
     while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        if (atempts >= 20) {
-            Serial.println(F("\nWiFi Failed to Connect!"));
+        button2.loop();
+        currentMillis = millis();
+        if (currentMillis - previousMillis > 500) {
+            if (atempts >= 20) {
+                Serial.println(F("\nWiFi Failed to Connect!"));
+                Serial.println(F(""));
+                return false;
+            }
+            Serial.print(F("."));
+            atempts++;
+            previousMillis = currentMillis;
+
+        } else if (button2.isReleased()) {
+            Serial.println(F("\nWiFi User Canceled"));
             Serial.println(F(""));
             return false;
         }
-        atempts++;
-        Serial.print(F("."));
     }
 
     // while (WiFi.waitForConnectResult() != WL_CONNECTED) {
